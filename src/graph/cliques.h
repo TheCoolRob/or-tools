@@ -293,8 +293,8 @@ class BronKerboschAlgorithm {
   // we optimize the algorithm, we might need to add deterministic time to the
   // other places that may produce complexity, namely InitializeState, PopState
   // and SelectCandidateIndexForRecursion.
-  static constexpr double kPushStateDeterministicTimeSecondsPerCandidate =
-      0.54663e-7;
+  //static constexpr double kPushStateDeterministicTimeSecondsPerCandidate =
+  //    0.54663e-7;
 
   // Initializes the root state of the algorithm.
   void Initialize();
@@ -451,9 +451,7 @@ void BronKerboschAlgorithm<NodeIndex>::PushState(NodeIndex selected) {
   ITIVector<CandidateIndex, NodeIndex> new_candidates;
 
   State* const previous_state = &states_.back();
-  const double deterministic_time =
-      kPushStateDeterministicTimeSecondsPerCandidate *
-      previous_state->candidates.size();
+  const double deterministic_time = (0.54663e-7) *  previous_state->candidates.size();
   time_limit_->AdvanceDeterministicTime(deterministic_time, "PushState");
 
   // Add all candidates from previous_state->candidates that are connected to
