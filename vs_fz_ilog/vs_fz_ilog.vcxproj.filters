@@ -45,6 +45,9 @@
     <ClInclude Include="..\src\flatzinc_ilog\solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\flatzinc_ilog\parser.tab.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vs_fz_ilog.rc">
@@ -75,9 +78,6 @@
     <ClCompile Include="..\src\flatzinc_ilog\parallel_support.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\flatzinc_ilog\parser_main.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\flatzinc_ilog\presolve.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -93,8 +93,17 @@
     <ClCompile Include="..\src\flatzinc_ilog\fz.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\src\flatzinc_ilog\parser.yy" />
+    <ClCompile Include="..\src\flatzinc_ilog\parser_main.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\flatzinc_ilog\parser.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\flatzinc_ilog\parser.yy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\flatzinc_ilog\parser.tab.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

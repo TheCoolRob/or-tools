@@ -25,7 +25,7 @@
 
 DEFINE_string(file, "", "Input file in the flatzinc format.");
 DEFINE_bool(print, false, "Print model.");
-DEFINE_bool(presolve, false, "Presolve loaded file.");
+//DEFINE_bool(presolve, false, "Presolve loaded file.");
 DEFINE_bool(statistics, false, "Print model statistics");
 DECLARE_bool(fz_logging);
 
@@ -58,13 +58,14 @@ void ParseFile(const std::string& filename, bool presolve) {
 }
 }  // namespace operations_research
 
-int main(int argc, char** argv) {
-  FLAGS_log_prefix = false;
-  const char kUsage[] =
-      "Parses a flatzinc .fzn file, optionally presolve it, and prints it in "
-      "human-readable format";
-  gflags::SetUsageMessage(kUsage);
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
-  operations_research::ParseFile(FLAGS_file, FLAGS_presolve);
-  return 0;
-}
+//int main(int argc, char** argv) {
+//  FLAGS_log_prefix = false;
+//  const char kUsage[] =
+//      "Parses a flatzinc .fzn file, optionally presolve it, and prints it in "
+//      "human-readable format";
+//  gflags::SetUsageMessage(kUsage);
+//  gflags::ParseCommandLineFlags(&argc, &argv, true);
+//  
+//  operations_research::ParseFile(FLAGS_file, FLAGS_presolve);
+//  return 0;
+//}
