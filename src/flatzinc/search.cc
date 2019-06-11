@@ -11,17 +11,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "flatzinc/search.h"
 #include <iostream>  // NOLINT
 #include <string>
+#include "base/hash.h"
 #include "base/integral_types.h"
 #include "base/logging.h"
-#include "base/stringprintf.h"
 #include "base/map_util.h"
-#include "base/hash.h"
+#include "base/stringprintf.h"
 #include "constraint_solver/constraint_solver.h"
 #include "constraint_solver/constraint_solveri.h"
 #include "flatzinc/model.h"
-#include "flatzinc/search.h"
 #include "flatzinc/solver.h"
 
 DECLARE_bool(fz_logging);
@@ -64,7 +64,8 @@ class FzInterrupt : public SearchLimit {
 };
 
 // Flatten Search annotations.
-void FlattenAnnotations(const FzAnnotation& ann, std::vector<FzAnnotation>* out) {
+void FlattenAnnotations(const FzAnnotation& ann,
+                        std::vector<FzAnnotation>* out) {
   if (ann.type == FzAnnotation::ANNOTATION_LIST ||
       ann.IsFunctionCallWithIdentifier("seq_search")) {
     for (const FzAnnotation& inner : ann.annotations) {
@@ -185,7 +186,8 @@ void MarkComputedVariables(FzConstraint* ct,
   if (id == "int_lin_eq" && ct->target_variable == nullptr) {
     const std::vector<int64>& array_coefficients = ct->Arg(0).values;
     const int size = array_coefficients.size();
-    const std::vector<FzIntegerVariable*>& array_variables = ct->Arg(1).variables;
+    const std::vector<FzIntegerVariable*>& array_variables =
+        ct->Arg(1).variables;
     bool todo = true;
     if (size == 0) {
       return;
@@ -592,19 +594,18 @@ void FzSolver::Solve(FzSolverParameters p,
                                  : nullptr;
 
   SearchLimit* const shadow =
-      limit == nullptr ? nullptr
-                       : solver()->MakeCustomLimit(
-                             [limit]() { return limit->Check(); });
+      limit == nullptr
+          ? nullptr
+          : solver()->MakeCustomLimit([limit]() { return limit->Check(); });
   DecisionBuilder* const db = CreateDecisionBuilders(p, shadow);
   std::vector<SearchMonitor*> monitors;
   if (model_.objective() != nullptr) {
     objective_monitor_ = parallel_support->Objective(
         solver(), model_.maximize(), objective_var_, 1, p.worker_id);
     SearchMonitor* const log =
-        p.use_log
-            ? solver()->RevAlloc(
-                  new FzLog(solver(), objective_monitor_, p.log_period))
-            : nullptr;
+        p.use_log ? solver()->RevAlloc(
+                        new FzLog(solver(), objective_monitor_, p.log_period))
+                  : nullptr;
     SearchLimit* const ctrl_c = solver()->RevAlloc(new FzInterrupt(solver()));
     monitors.push_back(log);
     monitors.push_back(objective_monitor_);
@@ -760,16 +761,16 @@ void FzSolver::Solve(FzSolverParameters p,
       }
     }
 
-
     const bool no_solutions = num_solutions == 0;
     const std::string status_string =
         (no_solutions ? (timeout ? "**timeout**" : "**unsat**")
                       : (model_.objective() == nullptr
                              ? "**sat**"
                              : (timeout ? "**feasible**" : "**proven**")));
-    const std::string obj_string = (model_.objective() != nullptr && !no_solutions
-                                   ? StringPrintf("%" GG_LL_FORMAT "d", best)
-                                   : "");
+    const std::string obj_string =
+        (model_.objective() != nullptr && !no_solutions
+             ? StringPrintf("%" GG_LL_FORMAT "d", best)
+             : "");
     final_output.append(
         "%%  name, status, obj, solns, s_time, b_time, br, "
         "fails, cts, demon, delayed, mem, search\n");
