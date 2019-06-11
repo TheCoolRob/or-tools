@@ -34,7 +34,8 @@ static const double kInfinity = std::numeric_limits<double>::infinity();
 
 // Internal method to detect errors in a single variable.
 std::string FindErrorInMPVariable(const MPVariableProto& variable) {
-  if (isnan(variable.lower_bound()) || isnan(variable.upper_bound()) ||
+  if (std::isnan(variable.lower_bound()) ||
+      std::isnan(variable.upper_bound()) ||
       variable.lower_bound() == kInfinity ||
       variable.upper_bound() == -kInfinity ||
       variable.lower_bound() > variable.upper_bound()) {
@@ -58,7 +59,7 @@ std::string FindErrorInMPVariable(const MPVariableProto& variable) {
 // "var_mask" is a std::vector<bool> whose size is the number of variables in
 // the model, and it will be all set to false before and after the call.
 std::string FindErrorInMPConstraint(const MPConstraintProto& constraint,
-                               std::vector<bool>* var_mask) {
+                                    std::vector<bool>* var_mask) {
   if (std::isnan(constraint.lower_bound()) ||
       std::isnan(constraint.upper_bound()) ||
       constraint.lower_bound() == kInfinity ||
@@ -107,8 +108,8 @@ std::string FindErrorInMPConstraint(const MPConstraintProto& constraint,
   return std::string();
 }
 
-std::string FindErrorInSolutionHint(const PartialVariableAssignment& solution_hint,
-                               int num_vars) {
+std::string FindErrorInSolutionHint(
+    const PartialVariableAssignment& solution_hint, int num_vars) {
   if (solution_hint.var_index_size() != solution_hint.var_value_size()) {
     return StrCat("var_index_size() != var_value_size() [",
                   solution_hint.var_index_size(), " VS ",
@@ -153,8 +154,8 @@ std::string FindErrorInMPModelProto(const MPModelProto& model) {
   for (int i = 0; i < num_vars; ++i) {
     error = FindErrorInMPVariable(model.variable(i));
     if (!error.empty()) {
-      return StrCat("In variable #", i, ": ", error, ". Variable proto: ",
-                    DebugString(model.variable(i)));
+      return StrCat("In variable #", i, ": ", error,
+                    ". Variable proto: ", DebugString(model.variable(i)));
     }
   }
 
@@ -171,17 +172,20 @@ std::string FindErrorInMPModelProto(const MPModelProto& model) {
       if (constraint.var_index_size() > kMaxNumVarsInPrintedConstraint) {
         constraint_light.mutable_var_index()->Truncate(
             kMaxNumVarsInPrintedConstraint);
-        StrAppend(&suffix_str, " (var_index cropped; size=",
-                  constraint.var_index_size(), ").");
+        StrAppend(&suffix_str,
+                  " (var_index cropped; size=", constraint.var_index_size(),
+                  ").");
       }
       if (constraint.coefficient_size() > kMaxNumVarsInPrintedConstraint) {
         constraint_light.mutable_coefficient()->Truncate(
             kMaxNumVarsInPrintedConstraint);
-        StrAppend(&suffix_str, " (coefficient cropped; size=",
-                  constraint.coefficient_size(), ").");
+        StrAppend(&suffix_str,
+                  " (coefficient cropped; size=", constraint.coefficient_size(),
+                  ").");
       }
-      return StrCat("In constraint #", i, ": ", error, ". Constraint proto: ",
-                    DebugString(constraint_light), suffix_str);
+      return StrCat("In constraint #", i, ": ", error,
+                    ". Constraint proto: ", DebugString(constraint_light),
+                    suffix_str);
     }
   }
 

@@ -24,9 +24,9 @@
 #include <vector>
 
 #include "base/commandlineflags.h"
-#include "base/stringprintf.h"
 #include "base/integral_types.h"
 #include "base/logging.h"
+#include "base/stringprintf.h"
 #include "base/threadpool.h"
 #include "base/timer.h"
 #include "flatzinc/model.h"
@@ -49,6 +49,8 @@ DEFINE_int32(heuristic_period, 100, "Period to call heuristics in free search");
 DEFINE_bool(verbose_impact, false, "Verbose impact");
 DEFINE_bool(verbose_mt, false, "Verbose Multi-Thread");
 DEFINE_bool(presolve, true, "Use presolve.");
+DEFINE_string(file_prefix, "", "The file prefix");
+DEFINE_int32(objective_norm, -1, "The objective normalisation term");
 
 DECLARE_bool(fz_logging);
 DECLARE_bool(log_prefix);

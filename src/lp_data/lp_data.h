@@ -25,15 +25,15 @@
 
 #include <algorithm>  // for max
 #include <map>
-#include "base/hash.h"
 #include <string>  // for std::string
 #include <vector>  // for vector
+#include "base/hash.h"
 
-#include "base/logging.h"  // for CHECK*
-#include "base/macros.h"   // for DISALLOW_COPY_AND_ASSIGN, NULL
+#include "base/hash.h"
 #include "base/int_type.h"
 #include "base/int_type_indexed_vector.h"
-#include "base/hash.h"
+#include "base/logging.h"  // for CHECK*
+#include "base/macros.h"   // for DISALLOW_COPY_AND_ASSIGN, NULL
 #include "lp_data/lp_types.h"
 #include "lp_data/matrix_scaler.h"
 #include "lp_data/sparse.h"
@@ -256,8 +256,8 @@ class LinearProgram {
   // lp_solve (see http://lpsolve.sourceforge.net/5.1/index.htm).
   std::string Dump() const;
 
-  // Returns a comma-separated std::string of integers containing (in that order)
-  // num_constraints_, num_variables_in_file_, num_entries_,
+  // Returns a comma-separated std::string of integers containing (in that
+  // order) num_constraints_, num_variables_in_file_, num_entries_,
   // num_objective_non_zeros_, num_rhs_non_zeros_, num_less_than_constraints_,
   // num_greater_than_constraints_, num_equal_constraints_,
   // num_range_constraints_, num_non_negative_variables_, num_boxed_variables_,
@@ -265,8 +265,8 @@ class LinearProgram {
   // Very useful for reporting in the way used in journal articles.
   std::string GetProblemStats() const;
 
-  // Returns a std::string containing the same information as with GetProblemStats(),
-  // but in a much more human-readable form, for example:
+  // Returns a std::string containing the same information as with
+  // GetProblemStats(), but in a much more human-readable form, for example:
   //      Number of rows                               : 27
   //      Number of variables in file                  : 32
   //      Number of entries (non-zeros)                : 83
@@ -293,8 +293,8 @@ class LinearProgram {
   // moved to SparseMatrix.
   std::string GetNonZeroStats() const;
 
-  // Returns a std::string containing the same information as with GetNonZeroStats(),
-  // but in a much more human-readable form, for example:
+  // Returns a std::string containing the same information as with
+  // GetNonZeroStats(), but in a much more human-readable form, for example:
   //      Fill rate                                    : 9.61%
   //      Entries in row (Max / average / std, dev.)   : 9 / 3.07 / 1.94
   //      Entries in column (Max / average / std, dev.): 4 / 2.59 / 0.96
@@ -523,8 +523,8 @@ struct ProblemSolution {
 // Helper function to check the bounds of the SetVariableBounds() and
 // SetConstraintBounds() functions.
 inline bool AreBoundsValid(Fractional lower_bound, Fractional upper_bound) {
-  if (isnan(lower_bound)) return false;
-  if (isnan(upper_bound)) return false;
+  if (std::isnan(lower_bound)) return false;
+  if (std::isnan(upper_bound)) return false;
   if (lower_bound == kInfinity && upper_bound == kInfinity) return false;
   if (lower_bound == -kInfinity && upper_bound == -kInfinity) return false;
   if (lower_bound > upper_bound) return false;

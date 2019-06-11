@@ -11,18 +11,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #include "lp_data/lp_data.h"
 
 #include <algorithm>
 #include <cmath>
-#include "base/hash.h"
 #include <string>
 #include <utility>
+#include "base/hash.h"
 
+#include "base/join.h"
 #include "base/logging.h"
 #include "base/stringprintf.h"
-#include "base/join.h"
 #include "lp_data/lp_print_utils.h"
 #include "lp_data/lp_utils.h"
 
@@ -34,8 +33,8 @@ namespace {
 // This should be the same as DCHECK(AreBoundsValid()), but the DCHECK() are
 // split to give more meaningful information to the user in case of failure.
 void DebugCheckBoundsValid(Fractional lower_bound, Fractional upper_bound) {
-  DCHECK(!isnan(lower_bound));
-  DCHECK(!isnan(upper_bound));
+  DCHECK(!std::isnan(lower_bound));
+  DCHECK(!std::isnan(upper_bound));
   DCHECK(!(lower_bound == kInfinity && upper_bound == kInfinity));
   DCHECK(!(lower_bound == -kInfinity && upper_bound == -kInfinity));
   DCHECK_LE(lower_bound, upper_bound);
@@ -187,7 +186,8 @@ ColIndex LinearProgram::FindOrCreateVariable(const std::string& variable_id) {
   }
 }
 
-RowIndex LinearProgram::FindOrCreateConstraint(const std::string& constraint_id) {
+RowIndex LinearProgram::FindOrCreateConstraint(
+    const std::string& constraint_id) {
   const hash_map<std::string, RowIndex>::iterator it =
       constraint_table_.find(constraint_id);
   if (it != constraint_table_.end()) {
@@ -423,7 +423,7 @@ bool LinearProgram::IsSolutionFeasible(
         ScalarProduct(solution, transpose.column(RowToColIndex(row)));
     // In case there are two or more infinite values in the solution with
     // opposite coefficients.
-    if (isnan(sum)) return false;
+    if (std::isnan(sum)) return false;
     const Fractional lb_error = constraint_lower_bounds()[row] - sum;
     const Fractional ub_error = sum - constraint_upper_bounds()[row];
     if (lb_error > absolute_tolerance || ub_error > absolute_tolerance) {
@@ -521,8 +521,9 @@ std::string LinearProgram::Dump() const {
 }
 
 std::string LinearProgram::GetProblemStats() const {
-  return ProblemStatFormatter("%d,%d,%lld,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,"
-                              "%d,%d,%d,%d");
+  return ProblemStatFormatter(
+      "%d,%d,%lld,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,"
+      "%d,%d,%d,%d");
 }
 
 std::string LinearProgram::GetPrettyProblemStats() const {
@@ -660,8 +661,8 @@ void LinearProgram::PopulateFromDual(const LinearProgram& dual,
       const ColIndex col = CreateNewVariable();
       SetVariableBounds(col, 0.0, kInfinity);
       SetObjectiveCoefficient(col, lower_bound);
-      matrix_.mutable_column(col)
-          ->PopulateFromSparseVector(matrix_.column(RowToColIndex(dual_row)));
+      matrix_.mutable_column(col)->PopulateFromSparseVector(
+          matrix_.column(RowToColIndex(dual_row)));
       (*duplicated_rows)[dual_row] = col;
     }
   }
@@ -1012,7 +1013,8 @@ std::string LinearProgram::ProblemStatFormatter(const char* format) const {
       continue;
     }
     LOG(DFATAL) << "There is a bug since all possible cases for the row bounds "
-                   "should have been accounted for. row=" << row;
+                   "should have been accounted for. row="
+                << row;
   }
 
   const int num_integer_variables = IntegerVariablesList().size();
