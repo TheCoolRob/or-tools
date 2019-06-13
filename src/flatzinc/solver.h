@@ -20,7 +20,6 @@
 
 namespace operations_research {
 class SatPropagator;
-
 // The main class to search for a solution in a flatzinc model.  It is
 // responsible for parsing the search annotations, setting up the
 // search state and perform the actual search.
@@ -82,14 +81,16 @@ class FzSolver {
                               std::vector<IntVar*>* active_variables,
                               std::vector<int>* defined_occurrences,
                               std::vector<int>* active_occurrences);
-  void AddCompletionDecisionBuilders(const std::vector<IntVar*>& defined_variables,
-                                     const std::vector<IntVar*>& active_variables,
-                                     SearchLimit* limit,
-                                     std::vector<DecisionBuilder*>* builders);
+  void AddCompletionDecisionBuilders(
+      const std::vector<IntVar*>& defined_variables,
+      const std::vector<IntVar*>& active_variables, SearchLimit* limit,
+      std::vector<DecisionBuilder*>* builders);
   DecisionBuilder* CreateDecisionBuilders(const FzSolverParameters& p,
                                           SearchLimit* limit);
   void CollectOutputVariables(std::vector<IntVar*>* output_variables);
   void SyncWithModel();
+
+  void ComputeNetworkStats();
 
   const FzModel& model_;
   FzModelStatistics statistics_;
@@ -103,7 +104,8 @@ class FzSolver {
   OptimizeVar* objective_monitor_;
   // Alldiff info before extraction
   void StoreAllDifferent(const std::vector<FzIntegerVariable*>& diffs);
-  hash_map<const FzIntegerVariable*, std::vector<std::vector<FzIntegerVariable*>>>
+  hash_map<const FzIntegerVariable*,
+           std::vector<std::vector<FzIntegerVariable*>>>
       alldiffs_;
   // Sat constraint.
   SatPropagator* sat_;
@@ -111,6 +113,9 @@ class FzSolver {
   DecisionBuilder* default_phase_;
   // Stored solutions.
   std::vector<hash_map<FzIntegerVariable*, int64>> stored_values_;
+
+  // the active fz integer variables corresponding to the active vars
+  std::vector<FzIntegerVariable*> fzMappedActive;
 };
 }  // namespace operations_research
 
